@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fluxo de API no iOS (Mermaid)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #000000;
+      --surface: #14213D;
+      --surface-2: #0b1529;
+      --text: #E5E5E5;
+      --muted: #c9d1df;
+      --primary: #F6C177;
+      --border: #ffffff22;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Atkinson Hyperlegible", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      letter-spacing: 0.03em;
+      font-size: 18px;
+    }
+
+    .container {
+      width: min(1200px, 94vw);
+      margin: 0 auto;
+      padding: 24px 0 40px;
+    }
+
+    header, section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    h1, h2 {
+      margin: 0 0 8px;
+      color: var(--primary);
+      line-height: 1.35;
+    }
+
+    p { margin: 0; color: var(--muted); }
+
+    .mermaid-wrap {
+      margin-top: 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      overflow: auto;
+    }
+
+    .chips {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      border: 1px solid #f6d5a6;
+      border-radius: 999px;
+      padding: 4px 10px;
+      color: #000;
+      background: var(--primary);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    a {
+      color: var(--primary);
+    }
+  </style>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      flowchart: { curve: 'basis' }
+    });
+  </script>
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>Fluxo de funcionamento de API no iOS</h1>
+      <p>Mapa detalhado com os principais termos usados no ciclo de rede de um app iOS moderno (UIKit ou SwiftUI).</p>
+      <div class="chips" aria-label="Termos principais">
+        <span class="chip">URLSession</span>
+        <span class="chip">Async/Await</span>
+        <span class="chip">Codable</span>
+        <span class="chip">Repository</span>
+        <span class="chip">ViewModel</span>
+        <span class="chip">Main Thread</span>
+        <span class="chip">Core Data</span>
+        <span class="chip">Keychain</span>
+        <span class="chip">Feature Flag</span>
+      </div>
+    </header>
+
+    <section>
+      <h2>1) Fluxo operacional (detalhado)</h2>
+      <div class="mermaid-wrap">
+<pre class="mermaid">flowchart TD
+  A[Usuário interage com a tela\nView / ViewController] --> B[ViewModel recebe evento]
+  B --> C{Feature Flag ativa?\n(UserDefaults / Remote Config)}
+  C -- Não --> X[Fluxo alternativo/local\nSem chamada remota]
+  C -- Sim --> D[Repository monta caso de uso]
+
+  D --> E[Request Builder\nURL + Method + Headers]
+  E --> F[Auth Interceptor\nBearer Token do Keychain]
+  F --> G[URLSession.data(for:)\nAsync/Await]
+
+  G --> H{HTTP Status Code}
+  H -- 2xx --> I[Decode JSON com Codable]
+  I --> J[DTO -> Domain Model Mapper]
+  J --> K[Persistência opcional\nCore Data / Cache em memória]
+  K --> L[ViewModel atualiza State]
+  L --> M[UI renderiza na Main Thread]
+
+  H -- 401 --> N[Refresh Token\nAuth Service]
+  N --> F
+
+  H -- 4xx / 5xx --> O[Mapeia erro de rede\npara erro de domínio]
+  O --> P[Retry/Backoff quando aplicável]
+  P --> Q[Exibe fallback amigável\n+ Telemetria/Logs]
+
+  classDef io fill:#1c2e52,stroke:#f6d5a6,color:#E5E5E5;
+  classDef ok fill:#113524,stroke:#9fe0b4,color:#E5E5E5;
+  classDef warn fill:#3f2a12,stroke:#f6c177,color:#E5E5E5;
+  classDef err fill:#4a1f24,stroke:#ff9aa5,color:#E5E5E5;
+
+  class A,B,D,E,F,G,I,J,K,L,M io;
+  class C,H warn;
+  class N,X ok;
+  class O,P,Q err;
+</pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>2) Mapa mental (arquitetura + responsabilidades)</h2>
+      <div class="mermaid-wrap">
+<pre class="mermaid">mindmap
+  root((API no iOS))
+    Camada de UI
+      View / ViewController
+      SwiftUI View
+      Main Thread
+    Camada de Estado
+      ViewModel
+      Published State
+      Loading / Error / Success
+    Camada de Dados
+      Repository
+      Service / API Client
+      URLSession
+      Async/Await
+    Segurança
+      Access Token
+      Keychain
+      Refresh Token
+    Transformação
+      JSON
+      Codable
+      DTO
+      Domain Model
+    Resiliência
+      HTTP Status
+      Retry / Backoff
+      Timeout
+      Fallback UI
+    Persistência
+      Core Data
+      Cache em memória
+      UserDefaults
+    Produto
+      Feature
+      Feature Flag
+      Rollout gradual
+    Observabilidade
+      Logs
+      Métricas
+      Crash/Erro
+</pre>
+      </div>
+      <p style="margin-top:10px">Abra também a página principal em <a href="index.html">index.html</a>.</p>
+    </section>
+  </main>
+</body>
+</html>

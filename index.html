@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Termos iOS em Inglês — Guia Dinâmico</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--bg: #000000;
+			--surface: #14213D;
+			--text: #E5E5E5;
+			--muted: #c9d1df;
+			--primary: #F6C177;
+			--primary-soft: #f6c17726;
+			--border: #ffffff22;
+			--ok: #FCA311;
+			--header-a: #14213D;
+			--header-b: #000000;
+			--radius: 16px;
+			--shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+			--font-size: 19px;
+			--line-height: 1.75;
+			--letter-spacing: 0.04em;
+		}
+
+		* { box-sizing: border-box; }
+
+		body {
+			margin: 0;
+			font-family: "Atkinson Hyperlegible", "OpenDyslexic", Arial, sans-serif;
+			background: var(--bg);
+			color: var(--text);
+			font-size: var(--font-size);
+			line-height: var(--line-height);
+			letter-spacing: var(--letter-spacing);
+		}
+
+		.container {
+			width: min(1080px, 94vw);
+			margin: 0 auto;
+			padding: 24px 0 48px;
+		}
+
+		header {
+			background: linear-gradient(135deg, var(--header-a), var(--header-b));
+			color: #FFFFFF;
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			padding: 20px;
+			box-shadow: var(--shadow);
+		}
+
+		h1 {
+			font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+			margin: 0 0 10px;
+			line-height: 1.3;
+		}
+
+		p { margin: 0; }
+
+		.controls {
+			margin-top: 18px;
+			display: grid;
+			gap: 12px;
+			grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+		}
+
+		label {
+			display: block;
+			font-weight: 700;
+			margin-bottom: 6px;
+		}
+
+		input, select, button {
+			width: 100%;
+			border: 1px solid var(--border);
+			border-radius: 12px;
+			padding: 12px;
+			font: inherit;
+			background: var(--surface);
+			color: var(--text);
+		}
+
+		input:focus, select:focus, button:focus {
+			outline: 3px solid var(--primary-soft);
+			border-color: var(--primary);
+		}
+
+		.toolbar {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			margin-top: 12px;
+		}
+
+		.toolbar button {
+			width: auto;
+			min-width: 160px;
+			cursor: pointer;
+			background: var(--surface);
+		}
+
+		.toolbar button.active {
+			background: var(--primary);
+			border-color: #f6d5a6;
+			color: #000000;
+		}
+
+		.stats {
+			margin-top: 16px;
+			font-weight: 700;
+			color: var(--ok);
+		}
+
+		.grid {
+			margin-top: 20px;
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+		}
+
+		.category-group {
+			background: #0b1529;
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			padding: 12px;
+		}
+
+		.category-title {
+			margin: 0 0 10px;
+			font-size: 1rem;
+			color: var(--primary);
+		}
+
+		.category-cards {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+			gap: 14px;
+		}
+
+		.card {
+			background: var(--surface);
+			border: 1px solid var(--border);
+			border-radius: var(--radius);
+			padding: 14px;
+			box-shadow: var(--shadow);
+		}
+
+		.term {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+		}
+
+		.term h2 {
+			margin: 0;
+			font-size: 1.15rem;
+			line-height: 1.35;
+		}
+
+		.speak-btn {
+			width: auto;
+			min-width: auto;
+			padding: 6px 10px;
+			border-radius: 10px;
+			cursor: pointer;
+			background: #0b1529;
+			color: var(--text);
+		}
+
+		.chip {
+			border: 1px solid #f6d5a6;
+			color: #000000;
+			background: var(--primary);
+			border-radius: 999px;
+			padding: 3px 10px;
+			font-size: 0.82rem;
+			font-weight: 700;
+			white-space: nowrap;
+		}
+
+		.meaning {
+			margin-top: 10px;
+			color: var(--muted);
+		}
+
+		.pronunciation {
+			margin-top: 8px;
+			color: var(--text);
+		}
+
+		.example {
+			margin-top: 10px;
+			border-left: 5px solid var(--primary);
+			padding: 8px 10px;
+			background: #0b1529;
+			border-radius: 8px;
+		}
+
+		.hidden { display: none; }
+
+		footer {
+			margin-top: 22px;
+			font-size: 0.94rem;
+			color: var(--muted);
+		}
+	</style>
+</head>
+<body>
+	<main class="container">
+		<header>
+			<h1>53 termos de iOS em inglês (exploração dinâmica)</h1>
+			<p>Filtre por categoria, pesquise por palavra e altere o modo de leitura para facilitar a compreensão.</p>
+
+			<section class="controls" aria-label="Filtros e busca">
+				<div>
+					<label for="search">Buscar termo</label>
+					<input id="search" type="text" placeholder="Ex.: View, API, SwiftUI..." />
+				</div>
+
+				<div>
+					<label for="category">Categoria</label>
+					<select id="category">
+						<option value="all">Todas</option>
+					</select>
+				</div>
+
+				<div>
+					<label for="sort">Ordenar</label>
+					<select id="sort">
+						<option value="az">A → Z</option>
+						<option value="za">Z → A</option>
+					</select>
+				</div>
+
+				<div>
+					<label for="speechRate">Velocidade da voz</label>
+					<select id="speechRate">
+						<option value="1">Normal</option>
+						<option value="0.76" selected>Lento (-20%)</option>
+						<option value="0.6">Muito lento</option>
+					</select>
+				</div>
+			</section>
+
+			<div class="toolbar" role="group" aria-label="Ajustes de leitura">
+				<button id="toggleMode" class="active" aria-pressed="true">Modo dislexia: ligado</button>
+				<button id="toggleExamples" class="active" aria-pressed="true">Exemplos: visíveis</button>
+				<button id="randomTerm">Mostrar termo aleatório</button>
+			</div>
+
+			<div id="stats" class="stats" aria-live="polite"></div>
+		</header>
+
+		<section id="grid" class="grid" aria-label="Lista de termos"></section>
+
+		<footer>
+			Dica: clique em “Mostrar termo aleatório” para revisar de forma ativa.
+		</footer>
+	</main>
+
+	<script>
+		const terms = [
+			{ term: "Swift", category: "Linguagem", meaning: "Linguagem principal para criar apps iOS.", example: "You can build iOS apps with Swift." },
+			{ term: "Xcode", category: "Ferramentas", meaning: "IDE oficial da Apple para desenvolvimento iOS.", example: "Open the project in Xcode." },
+			{ term: "UIKit", category: "UI", meaning: "Framework tradicional para construir interfaces no iOS.", example: "UIKit uses UIViewController." },
+			{ term: "SwiftUI", category: "UI", meaning: "Framework declarativo para criar telas com menos código.", example: "SwiftUI updates the view automatically." },
+			{ term: "View", category: "UI", meaning: "Elemento visual exibido na tela.", example: "This view shows user profile info." },
+			{ term: "ViewController", category: "Arquitetura", meaning: "Gerencia uma tela e sua lógica no UIKit.", example: "Each screen has a ViewController." },
+			{ term: "Storyboard", category: "UI", meaning: "Arquivo visual para desenhar fluxos de telas.", example: "The login screen is in the storyboard." },
+			{ term: "Auto Layout", category: "UI", meaning: "Sistema de constraints para adaptar layouts.", example: "Auto Layout keeps UI responsive." },
+			{ term: "Constraint", category: "UI", meaning: "Regra de posicionamento e tamanho de um componente.", example: "Add a top constraint to the label." },
+			{ term: "Delegate", category: "Padrões", meaning: "Padrão para repassar eventos entre objetos.", example: "Use a delegate to handle button actions." },
+			{ term: "Protocol", category: "Linguagem", meaning: "Conjunto de regras que tipos devem seguir.", example: "The class conforms to a protocol." },
+			{ term: "Extension", category: "Linguagem", meaning: "Forma de adicionar funcionalidades a tipos existentes.", example: "Create an extension for String." },
+			{ term: "Optional", category: "Linguagem", meaning: "Tipo que pode conter valor ou nil.", example: "An optional may be nil." },
+			{ term: "Closure", category: "Linguagem", meaning: "Bloco de código que pode ser passado como valor.", example: "Pass a closure as completion handler." },
+			{ term: "Guard", category: "Linguagem", meaning: "Verificação de condição para saída antecipada.", example: "Use guard to validate input." },
+			{ term: "Enum", category: "Linguagem", meaning: "Tipo com um conjunto fixo de casos.", example: "Use enum for app states." },
+			{ term: "MVC", category: "Arquitetura", meaning: "Model-View-Controller, padrão clássico no iOS.", example: "UIKit projects often use MVC." },
+			{ term: "MVVM", category: "Arquitetura", meaning: "Model-View-ViewModel, separa melhor lógica de UI.", example: "SwiftUI apps commonly use MVVM." },
+			{ term: "Dependency Injection", category: "Arquitetura", meaning: "Injetar dependências para reduzir acoplamento.", example: "Inject services into the view model." },
+			{ term: "Lifecycle", category: "Arquitetura", meaning: "Ciclo de vida de telas e app.", example: "Handle data in viewDidLoad lifecycle event." },
+			{ term: "AppDelegate", category: "Arquitetura", meaning: "Ponto de entrada tradicional do app no iOS.", example: "AppDelegate handles launch events." },
+			{ term: "SceneDelegate", category: "Arquitetura", meaning: "Gerencia janelas/cenas em versões recentes do iOS.", example: "SceneDelegate manages the app window." },
+			{ term: "URLSession", category: "Rede", meaning: "API para chamadas HTTP e comunicação de rede.", example: "Fetch data with URLSession." },
+			{ term: "REST API", category: "Rede", meaning: "Interface web para trocar dados com backend.", example: "The app consumes a REST API." },
+			{ term: "JSON", category: "Rede", meaning: "Formato de dados usado em APIs.", example: "Decode JSON into Swift models." },
+			{ term: "Codable", category: "Rede", meaning: "Protocolos para codificar/decodificar dados facilmente.", example: "Make structs conform to Codable." },
+			{ term: "Core Data", category: "Persistência", meaning: "Framework da Apple para persistência local estruturada.", example: "Store offline records with Core Data." },
+			{ term: "UserDefaults", category: "Persistência", meaning: "Armazenamento simples para preferências pequenas.", example: "Save theme choice in UserDefaults." },
+			{ term: "Keychain", category: "Segurança", meaning: "Armazena dados sensíveis com segurança.", example: "Save tokens in Keychain." },
+			{ term: "Async/Await", category: "Concorrência", meaning: "Sintaxe moderna para tarefas assíncronas.", example: "Use async/await for API calls." },
+			{ term: "Main Thread", category: "Concorrência", meaning: "Thread responsável por atualizar a interface.", example: "Update UI on the main thread." },
+			{ term: "Unit Test", category: "Qualidade", meaning: "Teste automatizado de partes isoladas do código.", example: "Write unit tests for business logic." },
+			{ term: "Feature", category: "Produto", meaning: "Funcionalidade entregue para o usuário final.", example: "This feature improves onboarding." },
+			{ term: "Feature Flag", category: "Produto", meaning: "Chave que liga/desliga funcionalidades sem novo deploy.", example: "Use a feature flag to release gradually." },
+			{ term: "Task", category: "Produto", meaning: "Tarefa técnica ou funcional planejada para implementação.", example: "Create a task to implement the login validation." },
+			{ term: "Jira Ticket", category: "Produto", meaning: "Registro no Jira para rastrear trabalho; uma task pode ser relacionada a um ticket.", example: "Link the task to the Jira ticket before starting development." },
+			{ term: "Repository", category: "Git", meaning: "Projeto versionado que guarda histórico de alterações.", example: "Clone the repository before starting." },
+			{ term: "Commit", category: "Git", meaning: "Registro de mudanças feitas no código.", example: "Create a commit with a clear message." },
+			{ term: "Branch", category: "Git", meaning: "Linha paralela de desenvolvimento.", example: "Create a branch for a new feature." },
+			{ term: "Merge", category: "Git", meaning: "Combina alterações de uma branch em outra.", example: "Merge the feature branch into main." },
+			{ term: "Git Pull", category: "Git", meaning: "Baixa e integra mudanças do repositório remoto na branch atual.", example: "Run git pull before starting your task." },
+			{ term: "Git Push", category: "Git", meaning: "Envia commits locais para o repositório remoto.", example: "Use git push to publish your branch." },
+			{ term: "Git Fetch", category: "Git", meaning: "Baixa mudanças do remoto sem integrar automaticamente.", example: "Run git fetch to inspect remote updates first." },
+			{ term: "Backend", category: "Backend/BFF", meaning: "Camada de servidor responsável por regras de negócio e dados.", example: "The backend validates and stores data." },
+			{ term: "BFF", category: "Backend/BFF", meaning: "Backend for Frontend: backend dedicado para as necessidades do app iOS.", example: "A BFF can simplify responses for mobile screens." },
+			{ term: "Endpoint", category: "Backend/BFF", meaning: "URL específica de uma API para uma operação.", example: "Call the users endpoint to fetch profiles." },
+			{ term: "Payload", category: "Backend/BFF", meaning: "Corpo de dados enviado ou recebido na requisição.", example: "The payload contains the order items." },
+			{ term: "Authentication", category: "Backend/BFF", meaning: "Processo de verificar identidade (quem é o usuário).", example: "Authentication uses token-based login." },
+			{ term: "Authorization", category: "Backend/BFF", meaning: "Processo de verificar permissões (o que pode acessar).", example: "Authorization checks user roles." },
+			{ term: "Request", category: "Backend/BFF", meaning: "Requisição enviada do app para a API.", example: "Send a request to fetch account details." },
+			{ term: "Response", category: "Backend/BFF", meaning: "Resposta retornada pela API ao app.", example: "Parse the response and update the UI." },
+			{ term: "Rate Limit", category: "Backend/BFF", meaning: "Limite de requisições permitido por período.", example: "The API returns 429 when rate limit is exceeded." },
+			{ term: "Idempotency", category: "Backend/BFF", meaning: "Repetir a mesma requisição não deve duplicar efeito no servidor.", example: "Use idempotency keys for payment requests." }
+		];
+
+		const pronunciationMap = {
+			"Swift": "suíft",
+			"Xcode": "éks-côud",
+			"UIKit": "iúi-kít",
+			"SwiftUI": "suíft iúi",
+			"View": "víu",
+			"ViewController": "víu con-trôu-ler",
+			"Storyboard": "stó-ri-bórd",
+			"Auto Layout": "ótou lêi-áut",
+			"Constraint": "con-strêint",
+			"Delegate": "dé-le-gueit",
+			"Protocol": "prô-to-cól",
+			"Extension": "éks-ten-shan",
+			"Optional": "óp-sho-nal",
+			"Closure": "clôu-jer",
+			"Guard": "gárd",
+			"Enum": "í-num",
+			"MVC": "em-vi-sí",
+			"MVVM": "em-vi-vi-em",
+			"Dependency Injection": "di-pén-den-ci in-jék-shan",
+			"Lifecycle": "laif-sái-kol",
+			"AppDelegate": "ép dé-le-gueit",
+			"SceneDelegate": "sín dé-le-gueit",
+			"URLSession": "iú-ar-él sé-shan",
+			"REST API": "rést êi-pi-ái",
+			"JSON": "jêi-són",
+			"Codable": "côu-da-bol",
+			"Core Data": "cór dêi-ta",
+			"UserDefaults": "iú-zer di-fólts",
+			"Keychain": "kí-tchein",
+			"Async/Await": "êi-sinc a-uêit",
+			"Main Thread": "mein thréd",
+			"Unit Test": "iú-nit tést",
+			"Feature": "fí-tcher",
+			"Feature Flag": "fí-tcher flég",
+			"Task": "tésk",
+			"Jira Ticket": "jí-ra tí-ket",
+			"Repository": "ri-pó-zi-tó-ri",
+			"Commit": "co-mít",
+			"Branch": "brénch",
+			"Merge": "mãrdj",
+			"Git Pull": "guít pól",
+			"Git Push": "guít púch",
+			"Git Fetch": "guít fétch",
+			"Backend": "bék-end",
+			"BFF": "bi-éf-éf",
+			"Endpoint": "ênd-point",
+			"Payload": "pêi-lôud",
+			"Authentication": "ô-then-ti-kêi-shan",
+			"Authorization": "ó-tho-ri-zêi-shan",
+			"Request": "ri-kuést",
+			"Response": "ris-póns",
+			"Rate Limit": "rêit lí-mit",
+			"Idempotency": "ai-dem-pô-ten-ci"
+		};
+
+		const searchInput = document.getElementById("search");
+		const categorySelect = document.getElementById("category");
+		const sortSelect = document.getElementById("sort");
+		const speechRateSelect = document.getElementById("speechRate");
+		const grid = document.getElementById("grid");
+		const stats = document.getElementById("stats");
+		const toggleModeBtn = document.getElementById("toggleMode");
+		const toggleExamplesBtn = document.getElementById("toggleExamples");
+		const randomTermBtn = document.getElementById("randomTerm");
+
+		let dyslexiaMode = true;
+		let showExamples = true;
+		let randomHighlight = null;
+		let preferredVoice = null;
+		let speechRate = 0.76;
+
+		function pickBestEnglishVoice() {
+			if (!window.speechSynthesis) return null;
+			const voices = window.speechSynthesis.getVoices();
+			const englishVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith("en"));
+			if (!englishVoices.length) return null;
+
+			const preferredNames = [
+				"google us english",
+				"samantha",
+				"allison",
+				"ava",
+				"daniel",
+				"serena",
+				"natural",
+				"enhanced",
+				"premium",
+				"neural",
+				"wavenet",
+				"siri"
+			];
+
+			const scored = englishVoices
+				.map(voice => {
+					const name = (voice.name || "").toLowerCase();
+					let score = 0;
+					preferredNames.forEach((key, index) => {
+						if (name.includes(key)) score += (preferredNames.length - index);
+					});
+					if (voice.localService === false) score += 2;
+					return { voice, score };
+				})
+				.sort((a, b) => b.score - a.score);
+
+			return scored[0]?.voice || englishVoices[0];
+		}
+
+		function populateCategories() {
+			const categories = [...new Set(terms.map(t => t.category))].sort();
+			categories.forEach(cat => {
+				const option = document.createElement("option");
+				option.value = cat;
+				option.textContent = cat;
+				categorySelect.appendChild(option);
+			});
+		}
+
+		function render() {
+			const query = searchInput.value.trim().toLowerCase();
+			const category = categorySelect.value;
+			const sort = sortSelect.value;
+
+			let filtered = terms.filter(item => {
+				const byCategory = category === "all" || item.category === category;
+				const bySearch =
+					item.term.toLowerCase().includes(query) ||
+					item.meaning.toLowerCase().includes(query) ||
+					item.example.toLowerCase().includes(query);
+				return byCategory && bySearch;
+			});
+
+			filtered.sort((a, b) => {
+				if (sort === "za") return b.term.localeCompare(a.term);
+				return a.term.localeCompare(b.term);
+			});
+
+			grid.innerHTML = "";
+
+			if (!filtered.length) {
+				grid.innerHTML = `<article class="card"><strong>Nenhum termo encontrado.</strong><p class="meaning">Tente outro filtro ou busca.</p></article>`;
+			} else {
+				const grouped = filtered.reduce((acc, item) => {
+					if (!acc[item.category]) acc[item.category] = [];
+					acc[item.category].push(item);
+					return acc;
+				}, {});
+
+				Object.keys(grouped).sort((a, b) => a.localeCompare(b)).forEach(categoryName => {
+					const group = document.createElement("section");
+					group.className = "category-group";
+
+					const title = document.createElement("h3");
+					title.className = "category-title";
+					title.textContent = `${categoryName} (${grouped[categoryName].length})`;
+
+					const cardsWrap = document.createElement("div");
+					cardsWrap.className = "category-cards";
+
+					grouped[categoryName].forEach(item => {
+						const card = document.createElement("article");
+						card.className = "card";
+						if (randomHighlight === item.term) {
+							card.style.borderColor = "#F6C177";
+							card.style.background = "#1c2e52";
+						}
+
+						card.innerHTML = `
+							<div class="term">
+								<h2>${item.term}</h2>
+								<button class="speak-btn" type="button" data-term="${item.term}" aria-label="Ouvir pronúncia de ${item.term}">🔊 Ouvir</button>
+							</div>
+							<p class="meaning">${item.meaning}</p>
+							<p class="pronunciation"><strong>Pronúncia:</strong> ${pronunciationMap[item.term] || "—"}</p>
+							<p class="example ${showExamples ? "" : "hidden"}"><strong>Exemplo:</strong> ${item.example}</p>
+						`;
+
+						cardsWrap.appendChild(card);
+					});
+
+					group.appendChild(title);
+					group.appendChild(cardsWrap);
+					grid.appendChild(group);
+				});
+			}
+
+			stats.textContent = `Mostrando ${filtered.length} de ${terms.length} termos.`;
+		}
+
+		function toggleDyslexiaMode() {
+			dyslexiaMode = !dyslexiaMode;
+			toggleModeBtn.classList.toggle("active", dyslexiaMode);
+			toggleModeBtn.setAttribute("aria-pressed", String(dyslexiaMode));
+			toggleModeBtn.textContent = `Modo dislexia: ${dyslexiaMode ? "ligado" : "desligado"}`;
+
+			const root = document.documentElement;
+			if (dyslexiaMode) {
+				root.style.setProperty("--font-size", "19px");
+				root.style.setProperty("--line-height", "1.75");
+				root.style.setProperty("--letter-spacing", "0.04em");
+			} else {
+				root.style.setProperty("--font-size", "17px");
+				root.style.setProperty("--line-height", "1.5");
+				root.style.setProperty("--letter-spacing", "0.01em");
+			}
+		}
+
+		function toggleExamples() {
+			showExamples = !showExamples;
+			toggleExamplesBtn.classList.toggle("active", showExamples);
+			toggleExamplesBtn.setAttribute("aria-pressed", String(showExamples));
+			toggleExamplesBtn.textContent = `Exemplos: ${showExamples ? "visíveis" : "ocultos"}`;
+			render();
+		}
+
+		function highlightRandomTerm() {
+			const random = terms[Math.floor(Math.random() * terms.length)];
+			randomHighlight = random.term;
+			searchInput.value = "";
+			categorySelect.value = "all";
+			render();
+		}
+
+		function speak(text) {
+			if (!window.speechSynthesis) return;
+			if (!preferredVoice) preferredVoice = pickBestEnglishVoice();
+			window.speechSynthesis.cancel();
+			const utterance = new SpeechSynthesisUtterance(text);
+			if (preferredVoice) {
+				utterance.voice = preferredVoice;
+				utterance.lang = preferredVoice.lang;
+			} else {
+				utterance.lang = "en-US";
+			}
+			utterance.rate = speechRate;
+			utterance.pitch = 1;
+			window.speechSynthesis.speak(utterance);
+		}
+
+		grid.addEventListener("click", (event) => {
+			const target = event.target;
+			if (!(target instanceof HTMLElement)) return;
+			const speakButton = target.closest(".speak-btn");
+			if (!speakButton) return;
+
+			const term = speakButton.getAttribute("data-term");
+			if (!term) return;
+			speak(term);
+		});
+
+		searchInput.addEventListener("input", () => {
+			randomHighlight = null;
+			render();
+		});
+		categorySelect.addEventListener("change", () => {
+			randomHighlight = null;
+			render();
+		});
+		sortSelect.addEventListener("change", render);
+		speechRateSelect.addEventListener("change", () => {
+			speechRate = Number(speechRateSelect.value) || 0.76;
+		});
+		toggleModeBtn.addEventListener("click", toggleDyslexiaMode);
+		toggleExamplesBtn.addEventListener("click", toggleExamples);
+		randomTermBtn.addEventListener("click", highlightRandomTerm);
+		if (window.speechSynthesis) {
+			window.speechSynthesis.onvoiceschanged = () => {
+				preferredVoice = pickBestEnglishVoice();
+			};
+			preferredVoice = pickBestEnglishVoice();
+		}
+
+		populateCategories();
+		render();
+	</script>
+</body>
+</html>
