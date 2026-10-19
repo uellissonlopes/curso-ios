@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fluxo de trabalho do desenvolvedor</title>
+  <style>
+    :root {
+      --bg: #101418;
+      --surface: #18222d;
+      --text: #edf2f7;
+      --muted: #d1d7df;
+      --primary: #d9a97b;
+      --primary-soft: #f4d7b6;
+      --border: #3d4857;
+      --jira: #f3d7a5;
+      --git: #cfeccc;
+      --devin: #cfe0ff;
+      --shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Atkinson Hyperlegible", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 32px 20px;
+      font-size: 19px;
+      line-height: 1.7;
+      letter-spacing: 0.03em;
+    }
+
+    .container {
+      width: min(1200px, 96vw);
+      margin: 0 auto;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1d2a36, #101418);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: #f5d7b4;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .card {
+      background: #141d27;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+      font-size: 0.95rem;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 7px 12px;
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .jira { background: var(--jira); }
+    .git { background: var(--git); }
+    .devin { background: var(--devin); }
+
+    .mermaid {
+      background: transparent;
+      min-height: 460px;
+    }
+
+    .actions {
+      margin-top: 18px;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      background: #1d2a36;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    .btn:hover {
+      border-color: var(--primary);
+      color: #f5d7b4;
+      background: #243445;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Fluxo de trabalho do desenvolvedor</h1>
+      <p class="subtitle">Visão geral do processo: Jira → Git → Devin → revisão → merge.</p>
+    </header>
+
+    <section class="card">
+      <div class="legend" aria-label="Legenda do fluxo">
+        <span class="legend-item"><span class="dot jira"></span> Jira</span>
+        <span class="legend-item"><span class="dot git"></span> Git</span>
+        <span class="legend-item"><span class="dot devin"></span> Devin</span>
+      </div>
+
+      <div class="mermaid">
+flowchart TD
+    A([Início]) --> B[Jira: mover atividade para Dev Started]
+    B --> C[Git: criar branch a partir da branch base, geralmente develop]
+    C --> D[Devin: enviar a descrição do Jira para o Devin e pedir análise]
+    D --> E[Devin: analisar a tarefa e orientar a implementação]
+    E --> F[Devin: fazer a implementação conforme o passo anterior]
+    F --> G[Git: fazer o commit]
+    G --> H[Git: fazer o push]
+    H --> I[Git: criar PR]
+    I --> J[Git: pedir revisão]
+    J --> K[Git: merge após aprovação]
+    K --> L[Jira: mudar para Dev Finished]
+
+    classDef jira fill:#f3d7a5,stroke:#d9a97b,color:#1b1b1b,stroke-width:2px,rx:12,ry:12;
+    classDef git fill:#cfeccc,stroke:#9bc39c,color:#1c2d1f,stroke-width:2px,rx:12,ry:12;
+    classDef devin fill:#cfe0ff,stroke:#9bb9e8,color:#1d2d40,stroke-width:2px,rx:12,ry:12;
+
+    class B,L jira;
+    class C,G,H,I,J,K git;
+    class D,E,F devin;
+    class A fill:#f0d2b4,stroke:#d9a97b,color:#1b1b1b,stroke-width:2px,rx:12,ry:12;
+      </div>
+
+      <div class="actions">
+        <a class="btn" href="index.html">Voltar ao início</a>
+      </div>
+    </section>
+  </div>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      securityLevel: 'loose',
+      flowchart: {
+        curve: 'linear',
+        useMaxWidth: true,
+        padding: 20,
+        diagramPadding: 20,
+        nodeSpacing: 30,
+        rankSpacing: 46
+      },
+      themeVariables: {
+        fontFamily: 'Atkinson Hyperlegible, Arial, sans-serif',
+        fontSize: '16px',
+        lineColor: '#e0c1a1',
+        primaryTextColor: '#edf2f7',
+        secondaryTextColor: '#edf2f7',
+        tertiaryColor: '#141d27',
+        mainBkg: '#141d27',
+        nodeBorder: '#d9a97b',
+        clusterBkg: '#1b2630',
+        clusterBorder: '#3d4857'
+      }
+    });
+  </script>
+</body>
+</html>
