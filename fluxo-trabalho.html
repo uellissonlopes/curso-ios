@@ -86,6 +86,30 @@
       padding: 7px 12px;
       color: var(--text);
       font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      appearance: none;
+    }
+
+    .legend-item:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .legend-item.is-active {
+      background: rgba(217, 169, 123, 0.16);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(217, 169, 123, 0.22);
+    }
+
+    .legend-item.is-muted {
+      opacity: 0.52;
+      filter: grayscale(0.18);
+    }
+
+    .legend-item:focus-visible {
+      outline: 2px solid var(--primary-soft);
+      outline-offset: 2px;
     }
 
     .dot {
@@ -102,6 +126,44 @@
     .mermaid {
       background: transparent;
       min-height: 460px;
+    }
+
+    .mermaid .node.is-highlighted > rect,
+    .mermaid .node.is-highlighted > polygon,
+    .mermaid .node.is-highlighted > ellipse,
+    .mermaid .node.is-highlighted > circle,
+    .mermaid .node.is-highlighted > path,
+    .mermaid .node.is-highlighted rect,
+    .mermaid .node.is-highlighted polygon,
+    .mermaid .node.is-highlighted ellipse,
+    .mermaid .node.is-highlighted circle,
+    .mermaid .node.is-highlighted path {
+      stroke: #ffffff !important;
+      stroke-width: 3px !important;
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.32));
+    }
+
+    .mermaid .node.is-muted,
+    .mermaid .node.is-muted rect,
+    .mermaid .node.is-muted polygon,
+    .mermaid .node.is-muted ellipse,
+    .mermaid .node.is-muted circle,
+    .mermaid .node.is-muted path {
+      opacity: 0.28;
+      filter: grayscale(0.25);
+    }
+
+    .mermaid .node.is-muted .label {
+      fill: rgba(237, 242, 247, 0.7);
+    }
+
+    .mermaid .node.is-highlighted .label {
+      fill: #ffffff;
+      font-weight: 700;
+    }
+
+    .mermaid .node.is-muted .label {
+      fill: rgba(237, 242, 247, 0.7);
     }
 
     .actions {
@@ -137,9 +199,15 @@
 
     <section class="card">
       <div class="legend" aria-label="Legenda do fluxo">
-        <span class="legend-item"><span class="dot jira"></span> Jira</span>
-        <span class="legend-item"><span class="dot git"></span> Git</span>
-        <span class="legend-item"><span class="dot devin"></span> Devin</span>
+        <button class="legend-item category-btn" type="button" data-category="jira" aria-pressed="false">
+          <span class="dot jira"></span> Jira
+        </button>
+        <button class="legend-item category-btn" type="button" data-category="git" aria-pressed="false">
+          <span class="dot git"></span> Git
+        </button>
+        <button class="legend-item category-btn" type="button" data-category="devin" aria-pressed="false">
+          <span class="dot devin"></span> Devin
+        </button>
       </div>
 
       <div class="mermaid">
@@ -174,8 +242,93 @@ flowchart TD
 
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+
+    const categoryMap = {
+      jira: ['Jira: mover atividade para Dev Started', 'Jira: mudar para Dev Finished'],
+      git: [
+        'Git: criar branch a partir da branch base, geralmente develop',
+        'Git: fazer o commit',
+        'Git: fazer o push',
+        'Git: criar PR',
+        'Git: pedir revisão',
+        'Git: merge após aprovação'
+      ],
+      devin: [
+        'Devin: enviar a descrição do Jira para o Devin e pedir análise',
+        'Devin: analisar a tarefa e orientar a implementação',
+        'Devin: fazer a implementação conforme o passo anterior'
+      ]
+    };
+
+    function getNodeText(node) {
+      return (node?.textContent || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function matchesCategory(node, category) {
+      const text = getNodeText(node);
+      return categoryMap[category].some((item) => text.includes(item));
+    }
+
+    function clearCategoryState() {
+      document.querySelectorAll('.mermaid .node').forEach((node) => {
+        node.classList.remove('is-highlighted', 'is-muted');
+      });
+    }
+
+    function applyCategoryState(category, mode) {
+      clearCategoryState();
+
+      document.querySelectorAll('.mermaid .node').forEach((node) => {
+        const isMatch = matchesCategory(node, category);
+
+        if (mode === 'highlight') {
+          node.classList.toggle('is-highlighted', isMatch);
+          node.classList.toggle('is-muted', !isMatch);
+        } else if (mode === 'muted') {
+          node.classList.toggle('is-muted', isMatch);
+          node.classList.toggle('is-highlighted', false);
+        }
+      });
+    }
+
+    function setupCategoryButtons() {
+      const buttons = document.querySelectorAll('.category-btn');
+
+      buttons.forEach((button) => {
+        const category = button.dataset.category;
+        let mode = 'off';
+
+        button.addEventListener('click', () => {
+          if (mode === 'off') {
+            mode = 'highlight';
+          } else if (mode === 'highlight') {
+            mode = 'muted';
+          } else {
+            mode = 'off';
+          }
+
+          buttons.forEach((btn) => {
+            const isCurrent = btn === button;
+            const isSelected = isCurrent && mode === 'highlight';
+            const isMuted = isCurrent && mode === 'muted';
+
+            btn.classList.toggle('is-active', isSelected);
+            btn.classList.toggle('is-muted', isMuted);
+            btn.setAttribute('aria-pressed', String(isSelected || isMuted));
+          });
+
+          if (mode === 'off') {
+            clearCategoryState();
+            return;
+          }
+
+          applyCategoryState(category, mode);
+        });
+      });
+    }
+
     mermaid.initialize({
-      startOnLoad: true,
+      startOnLoad: false,
       theme: 'dark',
       securityLevel: 'loose',
       flowchart: {
@@ -198,6 +351,10 @@ flowchart TD
         clusterBkg: '#1b2630',
         clusterBorder: '#3d4857'
       }
+    });
+
+    mermaid.run({ nodes: [document.querySelector('.mermaid')] }).then(() => {
+      setupCategoryButtons();
     });
   </script>
 </body>

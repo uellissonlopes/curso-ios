@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jornada do Usuário no PIX</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #101418;
+      color: #edf2f7;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #141d27;
+      border: 1px solid #3d4857;
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      color: #b9fbc0;
+      font-size: 1.7rem;
+    }
+
+    p {
+      color: #d1d7df;
+      margin: 0 0 16px;
+    }
+
+    .mermaid {
+      min-height: 520px;
+    }
+
+    .legend {
+      margin-top: 14px;
+      font-size: 0.92rem;
+      color: #b8c2cf;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>Jornada do Usuário no PIX</h1>
+      <p>Fluxo com PIX imediato, PIX agendado e PIX automático/recorrente.</p>
+
+      <div class="mermaid">
+flowchart TD
+  A([Usuário abre o app]) --> B[Seleciona área PIX]
+  B --> C[Escolhe chave, contato<br/>ou QR Code]
+  C --> D[Informa valor e descrição]
+  D --> E{Tipo de transferência}
+
+  E --> F[PIX Imediato]
+  F --> F1[Confirma com senha/biometria]
+  F1 --> F2[Liquidação em segundos]
+  F2 --> Z[Comprovante e notificação]
+
+  E --> G[PIX Agendado]
+  G --> G1[Define data e horário]
+  G1 --> G2[Validação de saldo na data]
+  G2 --> G3[Execução automática no vencimento]
+  G3 --> Z
+
+  E --> H[PIX Automático / Recorrente]
+  H --> H1[Configura periodicidade e limites]
+  H1 --> H2[Confirma criação do PIX Automático]
+  H2 --> H3[Fica na Lista de Pendentes<br/>Aguardando autorização]
+  H3 --> H4{Autorizar?}
+  H4 -- Sim --> H5[Movido para Lista de Ativos]
+  H4 -- Não / Expirado --> H6[Cancelado / Não efetivado]
+  H5 --> H7[Débitos automáticos a cada ciclo]
+  H7 --> Z
+  H6 --> Y
+
+  Z --> Y([Fim da jornada])
+
+  classDef startend fill:#f3d7b6,stroke:#c18d59,color:#1e1e1e,stroke-width:2px;
+  classDef action fill:#d6e9ff,stroke:#6da7df,color:#10253b,stroke-width:2px;
+  classDef decision fill:#ffe6a7,stroke:#d4a019,color:#3e2f00,stroke-width:2px;
+  classDef immediate fill:#ffd9de,stroke:#d84a5b,color:#4d0f17,stroke-width:2px;
+  classDef scheduled fill:#e1dcff,stroke:#7b6de0,color:#241a63,stroke-width:2px;
+  classDef recurring fill:#d4f7d8,stroke:#35a45a,color:#103b1f,stroke-width:2px;
+  classDef pending fill:#fff3cd,stroke:#e0a800,color:#533f03,stroke-width:2px;
+  classDef active fill:#c3f0c8,stroke:#2b8a3e,color:#0b3d14,stroke-width:2px;
+  classDef cancelled fill:#f8d7da,stroke:#dc3545,color:#721c24,stroke-width:2px;
+
+  class A,Y startend;
+  class B,C,D,Z action;
+  class E,H4 decision;
+  class F,F1,F2 immediate;
+  class G,G1,G2,G3 scheduled;
+  class H,H1,H2,H7 recurring;
+  class H3 pending;
+  class H5 active;
+  class H6 cancelled;
+      </div>
+      <p class="legend">Dica: o fluxo pode ser adaptado para exibir validações extras, como limite noturno e análise antifraude.</p>
+    </section>
+  </main>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      securityLevel: 'loose',
+      flowchart: {
+        curve: 'linear',
+        useMaxWidth: true
+      }
+    });
+  </script>
+</body>
+</html>
